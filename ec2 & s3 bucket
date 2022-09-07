@@ -1,0 +1,56 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+  }
+}
+# Configure the AWS Provider
+provider "aws" {
+  region  = var.aws_regionu.cal
+  profile = "preet"
+}
+variable "amis" {
+  type = map(any)
+  default = {
+    us-east-2 ={
+      ubuntu = "ami-0568773882d492fc8 "
+      linux  = "ami-02f3416038bdb17fb "
+    }
+    us-west-1 ={
+      ubuntu2 = "ami-018d291ca9ffc002f "
+      linux2 = "ami-085284d24fe829cd0"
+    
+    }
+  }
+}
+variable "instance_type" {
+    type = string
+    default = "t2.micro"
+}
+variable "aws_regionu" {
+  description = "AWS region"
+  type        = map(any)
+  default = {
+    NV  = "us-east-2"
+    cal = "us-west-1"
+  }
+}
+variable "tags" {
+  type    = string
+  default = "terraform"
+}
+resource "aws_s3_bucket" "bucket" {
+  bucket = "my-tf-test-bucket2345666677768"
+  tags = {
+    Name = var.tags
+  }
+}
+resource "aws_instance" "ec21"{
+  ami           = var.amis.us-west-1.linux2
+  instance_type = "t2.micro"
+  tags = {
+    Name = var.tags
+  }
+}
